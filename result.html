@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            color: #34495e;
+        }
+
+        img {
+            max-width: 400px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #5cb85c;
+            color: white;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prediction Result</h1>
+
+    <h2>Detected Body Shape: {{ body_shape }}</h2>
+
+    <h3>Your Captured Image:</h3>
+    <img src="{{ user_image_url }}" alt="User Image" />
+
+    {% if dress_image_url %}
+        <h3>Recommended Outfit:</h3>
+        <img src="{{ dress_image_url }}" alt="Recommended Dress" />
+    {% else %}
+        <p>No dress recommendation available.</p>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}">&#8592; Try Another Image</a>
+</body>
+</html>

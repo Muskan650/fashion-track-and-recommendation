@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outfit Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #video {
+            margin: 20px 0;
+        }
+
+        #videoFeed {
+            width: 640px;
+            height: 480px;
+            border: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .dress-recommendations {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .dress-recommendation {
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .dress-recommendation img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #predictedBodyShape {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Outfit Recommendation System</h1>
+    <div id="video">
+        <h2>Live Camera Feed</h2>
+        <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="Live Feed">
+    </div>
+
+    <button onclick="captureAndRecommend()">Capture and Get Recommendation</button>
+
+    <div id="predictedBodyShape">
+        <!-- Predicted body shape will appear here -->
+    </div>
+
+    <div id="recommendations">
+        <h2>Recommended Dresses:</h2>
+        <div class="dress-recommendations" id="dressRecommendations">
+            <!-- Dress recommendations will appear here -->
+        </div>
+    </div>
+
+    <script>
+        function captureAndRecommend() {
+            fetch('/predict', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                const dressRecommendations = document.getElementById("dressRecommendations");
+                const predictedBodyShape = document.getElementById("predictedBodyShape");
+                
+                // Clear previous recommendations and body shape text
+                dressRecommendations.innerHTML = "";
+                predictedBodyShape.innerHTML = "";
+
+                if (data.body_shape) {
+                    // Display the predicted body shape
+                    predictedBodyShape.innerHTML = "Predicted Body Shape: " + data.body_shape;
+                }
+
+                if (data.recommendation_images.length > 0) {
+                    data.recommendation_images.forEach(imageUrl => {
+                        const imgDiv = document.createElement("div");
+                        imgDiv.classList.add("dress-recommendation");
+
+                        const img = document.createElement("img");
+                        img.src = imageUrl;
+                        img.alt = "Dress Recommendation";
+
+                        imgDiv.appendChild(img);
+                        dressRecommendations.appendChild(imgDiv);
+                    });
+                } else {
+                    dressRecommendations.innerHTML = "<p>No recommendations found.</p>";
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching predictions:", error);
+            });
+        }
+    </script>
+</body>
+</html> 
